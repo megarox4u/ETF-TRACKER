@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ETF Holdings Tracker</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-mark">▣</span>
+        <span class="logo-text">ETF Holdings Tracker</span>
+      </div>
+      <nav class="tab-nav">
+        <button class="tab-btn active" data-tab="download">Download</button>
+        <button class="tab-btn" data-tab="history">History</button>
+        <button class="tab-btn" data-tab="etfs">My ETFs</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- DOWNLOAD TAB -->
+    <section class="tab-panel active" id="tab-download">
+      <div class="panel-header">
+        <h2>Download Holdings</h2>
+        <p class="sub">Paste an ETF issuer page URL — the app detects the holdings file link automatically.</p>
+      </div>
+
+      <div class="card">
+        <div class="form-row">
+          <label for="etf-ticker">ETF Ticker / Label</label>
+          <input id="etf-ticker" type="text" placeholder="e.g. SPY" maxlength="20" />
+        </div>
+        <div class="form-row">
+          <label for="etf-url">Issuer Page URL</label>
+          <input id="etf-url" type="url" placeholder="https://www.ishares.com/us/products/239726/..." />
+        </div>
+        <div class="form-row">
+          <label for="issuer-hint">Issuer (helps auto-detect)</label>
+          <select id="issuer-hint">
+            <option value="auto">Auto-detect</option>
+            <option value="ishares">iShares (BlackRock)</option>
+            <option value="vanguard">Vanguard</option>
+            <option value="ssga">SSGA (SPDR)</option>
+            <option value="invesco">Invesco</option>
+            <option value="wisdomtree">WisdomTree</option>
+            <option value="vaneck">VanEck</option>
+            <option value="ark">ARK Invest</option>
+            <option value="direct">Direct file URL</option>
+          </select>
+        </div>
+        <div class="btn-row">
+          <button id="btn-detect" class="btn-primary">Detect &amp; Download</button>
+          <button id="btn-manual" class="btn-ghost">Open URL Manually</button>
+        </div>
+        <div id="detect-status" class="status-box hidden"></div>
+      </div>
+
+      <div class="card" id="preview-card" style="display:none">
+        <div class="preview-header">
+          <div>
+            <h3 id="preview-ticker"></h3>
+            <span id="preview-meta" class="meta-tag"></span>
+          </div>
+          <button id="btn-save-history" class="btn-primary btn-sm">Save to History</button>
+        </div>
+        <div id="preview-table-wrap" class="table-wrap"></div>
+        <div class="preview-footer">
+          <button id="btn-export-csv" class="btn-ghost btn-sm">Export CSV</button>
+          <span id="preview-count" class="count-badge"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORY TAB -->
+    <section class="tab-panel" id="tab-history">
+      <div class="panel-header">
+        <h2>Download History</h2>
+        <p class="sub">All past snapshots, grouped by ETF ticker.</p>
+      </div>
+      <div class="filter-bar">
+        <input id="history-search" type="text" placeholder="Filter by ticker or date…" />
+        <button id="btn-export-all" class="btn-ghost btn-sm">Export All as ZIP</button>
+        <button id="btn-clear-history" class="btn-danger btn-sm">Clear All</button>
+      </div>
+      <div id="history-list" class="history-list"></div>
+    </section>
+
+    <!-- MY ETFs TAB -->
+    <section class="tab-panel" id="tab-etfs">
+      <div class="panel-header">
+        <h2>My ETFs</h2>
+        <p class="sub">Saved ETF entries with their issuer URLs for quick re-download.</p>
+      </div>
+      <div class="btn-row">
+        <button id="btn-add-etf" class="btn-primary">+ Add ETF</button>
+      </div>
+      <div id="etf-list" class="etf-grid"></div>
+    </section>
+  </main>
+
+  <!-- ADD ETF MODAL -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3 id="modal-title">Add ETF</h3>
+      <div class="form-row">
+        <label>Ticker</label>
+        <input id="modal-ticker" type="text" placeholder="SPY" maxlength="20" />
+      </div>
+      <div class="form-row">
+        <label>Name (optional)</label>
+        <input id="modal-name" type="text" placeholder="SPDR S&amp;P 500 ETF Trust" />
+      </div>
+      <div class="form-row">
+        <label>Issuer Page URL</label>
+        <input id="modal-url" type="url" placeholder="https://..." />
+      </div>
+      <div class="form-row">
+        <label>Issuer</label>
+        <select id="modal-issuer">
+          <option value="auto">Auto-detect</option>
+          <option value="ishares">iShares (BlackRock)</option>
+          <option value="vanguard">Vanguard</option>
+          <option value="ssga">SSGA (SPDR)</option>
+          <option value="invesco">Invesco</option>
+          <option value="wisdomtree">WisdomTree</option>
+          <option value="vaneck">VanEck</option>
+          <option value="ark">ARK Invest</option>
+          <option value="direct">Direct file URL</option>
+        </select>
+      </div>
+      <div class="btn-row">
+        <button id="modal-save" class="btn-primary">Save</button>
+        <button id="modal-cancel" class="btn-ghost">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="js/issuers.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/downloader.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
